@@ -9,6 +9,7 @@ interface PriceItem {
   currentPrice: number;
   category: string;
   createdAt: Date;
+  targetPurchase?: number;
 }
 
 const PriceComparisonApp = () => {
@@ -16,6 +17,7 @@ const PriceComparisonApp = () => {
   const [name, setName] = useState('');
   const [previousPrice, setPreviousPrice] = useState('');
   const [category, setCategory] = useState('');
+  const [targetPurchase, setTargetPurchase] = useState('');
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'difference'>('name');
@@ -73,6 +75,7 @@ const PriceComparisonApp = () => {
                 previousPrice: priceValue,
                 currentPrice: priceValue,
                 category,
+                targetPurchase: targetPurchase ? parseFloat(targetPurchase) : undefined,
               }
             : item
         )
@@ -85,6 +88,7 @@ const PriceComparisonApp = () => {
         currentPrice: priceValue,
         category,
         createdAt: new Date(),
+        targetPurchase: targetPurchase ? parseFloat(targetPurchase) : undefined,
       };
       setItems(prev => [...prev, newItem]);
     }
@@ -92,6 +96,7 @@ const PriceComparisonApp = () => {
     setName('');
     setPreviousPrice('');
     setCategory('');
+    setTargetPurchase('');
     setError('');
     setIsDropdownOpen(false);
     setEditingItem(null);
@@ -102,6 +107,7 @@ const PriceComparisonApp = () => {
     setName(item.name);
     setPreviousPrice(item.previousPrice.toString());
     setCategory(item.category);
+    setTargetPurchase(item.targetPurchase?.toString() || '');
     setIsDropdownOpen(true);
   };
 
@@ -126,6 +132,7 @@ const PriceComparisonApp = () => {
     setName('');
     setPreviousPrice('');
     setCategory('');
+    setTargetPurchase('');
     setError('');
     setIsDropdownOpen(true);
   };
@@ -222,6 +229,20 @@ const PriceComparisonApp = () => {
                         className="w-full p-2 rounded-lg border dark:border-gray-700 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
                       />
                     </div>
+                    <div>
+                      <label htmlFor="targetPurchase" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Target Purchase
+                      </label>
+                      <input
+                        type="number"
+                        id="targetPurchase"
+                        value={targetPurchase}
+                        onChange={(e) => setTargetPurchase(e.target.value)}
+                        className="w-full p-2 rounded-lg border dark:border-gray-700 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 outline-none"
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
                     {error && (
                       <p className="text-red-500 text-sm">{error}</p>
                     )}
@@ -279,6 +300,11 @@ const PriceComparisonApp = () => {
                     <span className={`${differenceColor} font-medium`}>
                       {difference.toFixed(1)}%
                     </span>
+                    {item.targetPurchase && item.currentPrice && (
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
+                      </span>
+                    )}
                     <button
                       onClick={() => handleEdit(item)}
                       className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
