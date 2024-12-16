@@ -306,89 +306,98 @@ const PriceComparisonApp = () => {
           setSortBy={setSortBy}
         />
 
-        <div className="space-y-4">
-          {filteredItems.map(item => {
-            const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
-            const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
+        <div className="space-y-6">
+          {filteredDailyLists.map(dailyList => (
+            <div key={dailyList.date}>
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                {new Date(dailyList.date).toLocaleDateString()}
+              </h2>
+              <div className="space-y-4">
+                {dailyList.items.map(item => {
+                  const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
+                  const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
 
-            return (
-              <div
-                key={item.id}
-                className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
-                  difference > 0 
-                    ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700' 
-                    : difference < 0 
-                    ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700' 
-                    : 'bg-white dark:bg-gray-800'
-                }`}
-              >
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
-                  </div>
-                  <div className="flex-1">
-                    <div className="w-full group">
-                      <input
-                        type="range"
-                        min={item.previousPrice * 0.5}
-                        max={item.previousPrice * 1.5}
-                        value={item.currentPrice}
-                        onChange={(e) => handlePriceChange(item.id, parseFloat(e.target.value))}
-                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer 
-                          dark:bg-gray-700 
-                          group-hover:bg-gray-300 dark:group-hover:bg-gray-600
-                          transition-colors duration-300
-                          [&::-webkit-slider-thumb]:appearance-none 
-                          [&::-webkit-slider-thumb]:w-4 
-                          [&::-webkit-slider-thumb]:h-4 
-                          [&::-webkit-slider-thumb]:bg-blue-500 
-                          [&::-webkit-slider-thumb]:rounded-full 
-                          [&::-webkit-slider-thumb]:shadow-md
-                          [&::-webkit-slider-thumb]:hover:bg-blue-600
-                          [&::-moz-range-thumb]:w-4 
-                          [&::-moz-range-thumb]:h-4 
-                          [&::-moz-range-thumb]:bg-blue-500 
-                          [&::-moz-range-thumb]:rounded-full 
-                          [&::-moz-range-thumb]:shadow-md
-                          [&::-moz-range-thumb]:hover:bg-blue-600"
-                        step="0.01"
-                      />
-                    </div>
-                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                      <span>Previous: ${item.previousPrice.toFixed(2)}</span>
-                      <span>Current: ${item.currentPrice.toFixed(2)}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className={`${differenceColor} font-medium font-mono min-w-[100px] inline-block text-right`}>
-                      {difference.toFixed(1)}%
-                    </span>
-                    {item.targetPurchase && item.currentPrice && (
-                      <span className="text-sm text-gray-600 dark:text-gray-400 inline-block min-w-[100px] text-right">
-                        Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
-                      </span>
-                    )}
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                      aria-label="Edit item"
+                  return (
+                    <div
+                      key={item.id}
+                      className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
+                        difference > 0 
+                          ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700' 
+                          : difference < 0 
+                          ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700' 
+                          : 'bg-white dark:bg-gray-800'
+                      }`}
                     >
-                      ✏️
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                      aria-label="Delete item"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </div>
+                      <div className="flex flex-col md:flex-row md:items-center gap-4">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
+                        </div>
+                        <div className="flex-1">
+                          <div className="w-full group">
+                            <input
+                              type="range"
+                              min={item.previousPrice * 0.5}
+                              max={item.previousPrice * 1.5}
+                              value={item.currentPrice}
+                              onChange={(e) => handlePriceChange(item.id, parseFloat(e.target.value))}
+                              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer 
+                                dark:bg-gray-700 
+                                group-hover:bg-gray-300 dark:group-hover:bg-gray-600
+                                transition-colors duration-300
+                                [&::-webkit-slider-thumb]:appearance-none 
+                                [&::-webkit-slider-thumb]:w-4 
+                                [&::-webkit-slider-thumb]:h-4 
+                                [&::-webkit-slider-thumb]:bg-blue-500 
+                                [&::-webkit-slider-thumb]:rounded-full 
+                                [&::-webkit-slider-thumb]:shadow-md
+                                [&::-webkit-slider-thumb]:hover:bg-blue-600
+                                [&::-moz-range-thumb]:w-4 
+                                [&::-moz-range-thumb]:h-4 
+                                [&::-moz-range-thumb]:bg-blue-500 
+                                [&::-moz-range-thumb]:rounded-full 
+                                [&::-moz-range-thumb]:shadow-md
+                                [&::-moz-range-thumb]:hover:bg-blue-600"
+                              step="0.01"
+                            />
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                            <span>Previous: ${item.previousPrice.toFixed(2)}</span>
+                            <span>Current: ${item.currentPrice.toFixed(2)}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className={`${differenceColor} font-medium font-mono min-w-[100px] inline-block text-right`}>
+                            {difference.toFixed(1)}%
+                          </span>
+                          {item.targetPurchase && item.currentPrice && (
+                            <span className="text-sm text-gray-600 dark:text-gray-400 inline-block min-w-[100px] text-right">
+                              Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
+                            </span>
+                          )}
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            aria-label="Edit item"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                            aria-label="Delete item"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-          {filteredItems.length === 0 && (
+            </div>
+          ))}
+          {filteredDailyLists.length === 0 && (
             <p className="text-center text-gray-500 dark:text-gray-400 py-8">
               No items found. Add some items to get started!
             </p>
