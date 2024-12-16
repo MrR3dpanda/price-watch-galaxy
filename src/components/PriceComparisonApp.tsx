@@ -68,6 +68,10 @@ const PriceComparisonApp = () => {
     const today = new Date().toISOString().split('T')[0];
     const todayList = dailyLists.find(list => list.date === today);
 
+    console.log('Current dailyLists:', dailyLists);
+    console.log('Today:', today);
+    console.log('Today list:', todayList);
+
     if (!editingItem && todayList?.items.some(item => item.name.toLowerCase() === name.toLowerCase())) {
       setError('An item with this name already exists');
       return;
@@ -83,20 +87,26 @@ const PriceComparisonApp = () => {
       targetPurchase: targetPurchase ? parseFloat(targetPurchase) : undefined,
     };
 
+    console.log('New item:', newItem);
+
     if (editingItem) {
-      setDailyLists(prev => prev.map(list => {
-        if (list.date === today) {
-          return {
-            ...list,
-            items: list.items.map(item =>
-              item.id === editingItem.id ? { ...newItem, id: item.id } : item
-            )
-          };
-        }
-        return list;
-      }));
+      setDailyLists(prev => {
+        console.log('Editing existing item');
+        return prev.map(list => {
+          if (list.date === today) {
+            return {
+              ...list,
+              items: list.items.map(item =>
+                item.id === editingItem.id ? { ...newItem, id: item.id } : item
+              )
+            };
+          }
+          return list;
+        });
+      });
     } else {
       setDailyLists(prev => {
+        console.log('Adding new item');
         const existingListIndex = prev.findIndex(list => list.date === today);
         if (existingListIndex !== -1) {
           const updatedLists = [...prev];
@@ -104,9 +114,12 @@ const PriceComparisonApp = () => {
             ...updatedLists[existingListIndex],
             items: [...updatedLists[existingListIndex].items, newItem]
           };
+          console.log('Updated lists:', updatedLists);
           return updatedLists;
         } else {
-          return [...prev, { date: today, items: [newItem] }];
+          const newLists = [...prev, { date: today, items: [newItem] }];
+          console.log('New lists:', newLists);
+          return newLists;
         }
       });
     }
