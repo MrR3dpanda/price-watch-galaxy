@@ -8,12 +8,17 @@ interface PriceItem {
   previousPrice: number;
   currentPrice: number;
   category: string;
-  createdAt: Date;
+  createdAt: string; // Change to string for easier serialization
   targetPurchase?: number;
 }
 
+interface DailyPriceList {
+  date: string;
+  items: PriceItem[];
+}
+
 const PriceComparisonApp = () => {
-  const [items, setItems] = useState<PriceItem[]>([]);
+  const [dailyLists, setDailyLists] = useState<DailyPriceList[]>([]);
   const [name, setName] = useState('');
   const [previousPrice, setPreviousPrice] = useState('');
   const [category, setCategory] = useState('');
@@ -26,9 +31,9 @@ const PriceComparisonApp = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const savedItems = localStorage.getItem('priceItems');
-    if (savedItems) {
-      setItems(JSON.parse(savedItems));
+    const savedDailyLists = localStorage.getItem('dailyPriceLists');
+    if (savedDailyLists) {
+      setDailyLists(JSON.parse(savedDailyLists));
     }
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,8 +48,8 @@ const PriceComparisonApp = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('priceItems', JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem('dailyPriceLists', JSON.stringify(dailyLists));
+  }, [dailyLists]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,37 +65,50 @@ const PriceComparisonApp = () => {
       return;
     }
 
-    if (!editingItem && items.some(item => item.name.toLowerCase() === name.toLowerCase())) {
+    const today = new Date().toISOString().split('T')[0];
+    const todayList = dailyLists.find(list => list.date === today);
+
+    if (!editingItem && todayList?.items.some(item => item.name.toLowerCase() === name.toLowerCase())) {
       setError('An item with this name already exists');
       return;
     }
 
+    const newItem: PriceItem = {
+      id: Date.now().toString(),
+      name,
+      previousPrice: priceValue,
+      currentPrice: priceValue,
+      category,
+      createdAt: today,
+      targetPurchase: targetPurchase ? parseFloat(targetPurchase) : undefined,
+    };
+
     if (editingItem) {
-      setItems(prev =>
-        prev.map(item =>
-          item.id === editingItem.id
-            ? {
-                ...item,
-                name,
-                previousPrice: priceValue,
-                currentPrice: priceValue,
-                category,
-                targetPurchase: targetPurchase ? parseFloat(targetPurchase) : undefined,
-              }
-            : item
-        )
-      );
+      setDailyLists(prev => prev.map(list => {
+        if (list.date === today) {
+          return {
+            ...list,
+            items: list.items.map(item =>
+              item.id === editingItem.id ? { ...newItem, id: item.id } : item
+            )
+          };
+        }
+        return list;
+      }));
     } else {
-      const newItem: PriceItem = {
-        id: Date.now().toString(),
-        name,
-        previousPrice: priceValue,
-        currentPrice: priceValue,
-        category,
-        createdAt: new Date(),
-        targetPurchase: targetPurchase ? parseFloat(targetPurchase) : undefined,
-      };
-      setItems(prev => [...prev, newItem]);
+      setDailyLists(prev => {
+        const existingListIndex = prev.findIndex(list => list.date === today);
+        if (existingListIndex !== -1) {
+          const updatedLists = [...prev];
+          updatedLists[existingListIndex] = {
+            ...updatedLists[existingListIndex],
+            items: [...updatedLists[existingListIndex].items, newItem]
+          };
+          return updatedLists;
+        } else {
+          return [...prev, { date: today, items: [newItem] }];
+        }
+      });
     }
 
     setName('');
@@ -112,15 +130,31 @@ const PriceComparisonApp = () => {
   };
 
   const handleDelete = (id: string) => {
-    setItems(prev => prev.filter(item => item.id !== id));
+    const today = new Date().toISOString().split('T')[0];
+    setDailyLists(prev => prev.map(list => {
+      if (list.date === today) {
+        return {
+          ...list,
+          items: list.items.filter(item => item.id !== id)
+        };
+      }
+      return list;
+    }));
   };
 
   const handlePriceChange = (id: string, newPrice: number) => {
-    setItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, currentPrice: newPrice } : item
-      )
-    );
+    const today = new Date().toISOString().split('T')[0];
+    setDailyLists(prev => prev.map(list => {
+      if (list.date === today) {
+        return {
+          ...list,
+          items: list.items.map(item =>
+            item.id === id ? { ...item, currentPrice: newPrice } : item
+          )
+        };
+      }
+      return list;
+    }));
   };
 
   const calculatePriceDifference = (previous: number, current: number) => {
@@ -137,26 +171,32 @@ const PriceComparisonApp = () => {
     setIsDropdownOpen(true);
   };
 
-  const filteredItems = items
-    .filter(item =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.category.toLowerCase().includes(search.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'price':
-          return a.currentPrice - b.currentPrice;
-        case 'difference':
-          return (
-            calculatePriceDifference(a.previousPrice, a.currentPrice) -
-            calculatePriceDifference(b.previousPrice, b.currentPrice)
-          );
-        default:
-          return 0;
-      }
-    });
+  const filteredDailyLists = dailyLists
+    .map(list => ({
+      ...list,
+      items: list.items
+        .filter(item =>
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.category.toLowerCase().includes(search.toLowerCase())
+        )
+        .sort((a, b) => {
+          switch (sortBy) {
+            case 'name':
+              return a.name.localeCompare(b.name);
+            case 'price':
+              return a.currentPrice - b.currentPrice;
+            case 'difference':
+              return (
+                calculatePriceDifference(a.previousPrice, a.currentPrice) -
+                calculatePriceDifference(b.previousPrice, b.currentPrice)
+              );
+            default:
+              return 0;
+          }
+        })
+    }))
+    .filter(list => list.items.length > 0)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
