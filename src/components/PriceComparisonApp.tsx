@@ -274,7 +274,13 @@ const PriceComparisonApp = () => {
             return (
               <div
                 key={item.id}
-                className="p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+                className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
+                  difference > 0 
+                    ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700' 
+                    : difference < 0 
+                    ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700' 
+                    : 'bg-white dark:bg-gray-800'
+                }`}
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   <div className="flex-1">
