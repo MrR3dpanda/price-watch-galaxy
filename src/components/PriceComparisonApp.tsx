@@ -303,7 +303,7 @@ const PriceComparisonApp = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className={`${differenceColor} font-medium`}>
+                    <span className={`${differenceColor} font-medium font-mono min-w-[50px] inline-block text-right`}>
                       {difference.toFixed(1)}%
                     </span>
                     {item.targetPurchase && item.currentPrice && (
