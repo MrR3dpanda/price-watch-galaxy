@@ -307,7 +307,7 @@ const PriceComparisonApp = () => {
                       {difference.toFixed(1)}%
                     </span>
                     {item.targetPurchase && item.currentPrice && (
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 inline-block min-w-[80px] text-right">
                         Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
                       </span>
                     )}
