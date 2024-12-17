@@ -321,13 +321,32 @@ const PriceComparisonApp = () => {
         />
 
         <div className="space-y-6">
-          {filteredDailyLists.map(dailyList => (
-            <div key={dailyList.date}>
-              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                {new Date(dailyList.date).toLocaleDateString()}
+          {filteredDailyLists.length > 0 && (
+            <div className="flex items-center justify-between mb-4">
+              <button 
+                onClick={() => setCurrentDayIndex(prev => Math.max(0, prev - 1))}
+                disabled={currentDayIndex === 0}
+                className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 disabled:opacity-50"
+              >
+                ←
+              </button>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {new Date(filteredDailyLists[currentDayIndex].date).toLocaleDateString()}
               </h2>
+              <button 
+                onClick={() => setCurrentDayIndex(prev => Math.min(filteredDailyLists.length - 1, prev + 1))}
+                disabled={currentDayIndex === filteredDailyLists.length - 1}
+                className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 disabled:opacity-50"
+              >
+                →
+              </button>
+            </div>
+          )}
+          
+          {filteredDailyLists.length > 0 ? (
+            <div key={filteredDailyLists[currentDayIndex].date}>
               <div className="space-y-4">
-                {dailyList.items.map(item => {
+                {filteredDailyLists[currentDayIndex].items.map(item => {
                   const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
                   const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
 
@@ -410,8 +429,7 @@ const PriceComparisonApp = () => {
                 })}
               </div>
             </div>
-          ))}
-          {filteredDailyLists.length === 0 && (
+          ) : (
             <p className="text-center text-gray-500 dark:text-gray-400 py-8">
               No items found. Add some items to get started!
             </p>
