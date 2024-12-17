@@ -28,6 +28,7 @@ const PriceComparisonApp = () => {
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'difference'>('name');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PriceItem | null>(null);
+  const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
