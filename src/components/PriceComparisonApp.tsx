@@ -8,8 +8,16 @@ interface PriceItem {
   previousPrice: number;
   currentPrice: number;
   category: string;
-  createdAt: string; // Change to string for easier serialization
+  createdAt: string;
   targetPurchase?: number;
+  lastPrice?: number; // Add last price tracking
+}
+
+interface ItemHistory {
+  name: string;
+  category: string;
+  lastPrice: number;
+  lastUpdated: string;
 }
 
 interface DailyPriceList {
@@ -19,6 +27,7 @@ interface DailyPriceList {
 
 const PriceComparisonApp = () => {
   const [dailyLists, setDailyLists] = useState<DailyPriceList[]>([]);
+  const [itemHistory, setItemHistory] = useState<ItemHistory[]>([]);
   const [name, setName] = useState('');
   const [previousPrice, setPreviousPrice] = useState('');
   const [category, setCategory] = useState('');
@@ -33,8 +42,13 @@ const PriceComparisonApp = () => {
 
   useEffect(() => {
     const savedDailyLists = localStorage.getItem('dailyPriceLists');
+    const savedItemHistory = localStorage.getItem('itemHistory');
+    
     if (savedDailyLists) {
       setDailyLists(JSON.parse(savedDailyLists));
+    }
+    if (savedItemHistory) {
+      setItemHistory(JSON.parse(savedItemHistory));
     }
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,7 +64,8 @@ const PriceComparisonApp = () => {
 
   useEffect(() => {
     localStorage.setItem('dailyPriceLists', JSON.stringify(dailyLists));
-  }, [dailyLists]);
+    localStorage.setItem('itemHistory', JSON.stringify(itemHistory));
+  }, [dailyLists, itemHistory]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,9 +177,33 @@ const PriceComparisonApp = () => {
       if (list.date === today) {
         return {
           ...list,
-          items: list.items.map(item =>
-            item.id === id ? { ...item, currentPrice: newPrice } : item
-          )
+          items: list.items.map(item => {
+            if (item.id === id) {
+              // Update item history when price changes
+              setItemHistory(prevHistory => {
+                const existing = prevHistory.find(h => h.name === item.name);
+                if (existing) {
+                  return prevHistory.map(h => 
+                    h.name === item.name 
+                      ? { ...h, lastPrice: newPrice, lastUpdated: today }
+                      : h
+                  );
+                }
+                return [
+                  ...prevHistory,
+                  {
+                    name: item.name,
+                    category: item.category,
+                    lastPrice: newPrice,
+                    lastUpdated: today
+                  }
+                ];
+              });
+              
+              return { ...item, currentPrice: newPrice, lastPrice: newPrice };
+            }
+            return item;
+          })
         };
       }
       return list;
@@ -242,7 +281,30 @@ const PriceComparisonApp = () => {
               
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg z-50">
-                  <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                      Add from History:
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      {itemHistory.map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setName(item.name);
+                            setPreviousPrice(item.lastPrice.toString());
+                            setCategory(item.category);
+                          }}
+                          className="p-2 text-left rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        >
+                          <div className="text-sm font-medium">{item.name}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            Last: ${item.lastPrice.toFixed(2)}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <form onSubmit={handleSubmit} className="p-4 space-y-4 border-t dark:border-gray-700">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Item Name *
