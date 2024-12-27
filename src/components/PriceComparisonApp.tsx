@@ -415,7 +415,7 @@ const PriceComparisonApp = () => {
 
           {filteredDailyLists.length > 0 ? (
             <div key={filteredDailyLists[currentDayIndex].date}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-4 md:grid-cols-4 gap-4">
                 {filteredDailyLists[currentDayIndex].items.map(item => {
                   const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
                   const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
