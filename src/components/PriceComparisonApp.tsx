@@ -438,27 +438,12 @@ const PriceComparisonApp = () => {
                         <div className="flex flex-col md:flex-row md:items-center gap-4">
                           <div className="flex-1">
                             <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span className={`${differenceColor} font-medium font-mono min-w-[100px] inline-block text-right`}>
-                              {difference.toFixed(1)}%
-                            </span>
-                            {item.targetPurchase && item.currentPrice && (
-                              <span className="text-sm text-gray-600 dark:text-gray-400 inline-block min-w-[100px] text-right">
-                                Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
-                              </span>
-                            )}
                           </div>
                         </div>
                       </button>
                       
                       {openItems[item.id] && (
-                      <div className="flex flex-col md:flex-row md:items-center gap-4">
-                        <div className="flex-1">
-                          <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
-                        </div>
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 p-4">
                         <div className="flex-1">
                           <div className="w-full group">
                             <input
