@@ -36,6 +36,7 @@ const PriceComparisonApp = () => {
   const [error, setError] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'difference'>('name');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PriceItem | null>(null);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
@@ -266,52 +267,33 @@ const PriceComparisonApp = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Price Comparison</h1>
           <div className="flex items-center gap-4">
             <DarkModeToggle />
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={handleAddNew}
-                className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-                aria-label="Add new item"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            <div className="flex gap-2">
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => {
+                    setIsHistoryOpen(false);
+                    setIsDropdownOpen(!isDropdownOpen);
+                  }}
+                  className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                  aria-label="Add new item"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                </button>
 
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg z-50">
-                  <div className="p-4">
-                    <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                      Add from History:
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      {itemHistory.map((item, index) => (
-                        <button
-                          key={index}
-                          onClick={() => {
-                            setName(item.name);
-                            setPreviousPrice(item.lastPrice.toString());
-                            setCategory(item.category);
-                          }}
-                          className="p-2 text-left rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                        >
-                          <div className="text-sm font-medium">{item.name}</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Last: ${item.lastPrice.toFixed(2)}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg z-50">
                   <form onSubmit={handleSubmit} className="p-4 space-y-4 border-t dark:border-gray-700">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -377,8 +359,62 @@ const PriceComparisonApp = () => {
                       {editingItem ? 'Update Item' : 'Add Item'}
                     </button>
                   </form>
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
+
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    setIsHistoryOpen(!isHistoryOpen);
+                  }}
+                  className="p-2 rounded-lg bg-purple-500 text-white hover:bg-purple-600 transition-colors"
+                  aria-label="Add from history"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </button>
+
+                {isHistoryOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg z-50 p-4">
+                    <h3 className="text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                      Add from History:
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      {itemHistory.map((item, index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setName(item.name);
+                            setPreviousPrice(item.lastPrice.toString());
+                            setCategory(item.category);
+                            setIsHistoryOpen(false);
+                            setIsDropdownOpen(true);
+                          }}
+                          className="p-2 text-left rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        >
+                          <div className="text-sm font-medium">{item.name}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            Last: ${item.lastPrice.toFixed(2)}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
