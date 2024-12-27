@@ -415,21 +415,21 @@ const PriceComparisonApp = () => {
 
           {filteredDailyLists.length > 0 ? (
             <div key={filteredDailyLists[currentDayIndex].date}>
-              <div className="grid grid-cols-4 md:grid-cols-4 gap-4">
-                {filteredDailyLists[currentDayIndex].items.map(item => {
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                {filteredDailyLists[currentDayIndex].items.map((item, index) => {
                   const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
                   const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
 
                   return (
                     <div
                       key={item.id}
-                      className={`rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
+                      className={`col-span-1 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
                         difference > 0
                           ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700'
                           : difference < 0
                           ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700'
                           : 'bg-white dark:bg-gray-800'
-                      }`}
+                      } ${openItems[item.id] ? 'md:col-span-4' : ''}`}
                     >
                       <button
                         onClick={() => toggleItem(item.id)}
@@ -439,7 +439,7 @@ const PriceComparisonApp = () => {
                       </button>
                       
                       {openItems[item.id] && (
-                      <div className="flex flex-col md:flex-row md:items-center gap-4 p-4">
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 p-4 w-full">
                         <div className="flex-1">
                           <div className="w-full group">
                             <input
