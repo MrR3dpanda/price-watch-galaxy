@@ -38,7 +38,15 @@ const PriceComparisonApp = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PriceItem | null>(null);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleItem = (id: string) => {
+    setOpenItems(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   useEffect(() => {
     const savedDailyLists = localStorage.getItem('dailyPriceLists');
@@ -415,7 +423,7 @@ const PriceComparisonApp = () => {
                   return (
                     <div
                       key={item.id}
-                      className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
+                      className={`rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
                         difference > 0
                           ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700'
                           : difference < 0
@@ -423,6 +431,29 @@ const PriceComparisonApp = () => {
                           : 'bg-white dark:bg-gray-800'
                       }`}
                     >
+                      <button
+                        onClick={() => toggleItem(item.id)}
+                        className="w-full p-4 text-left"
+                      >
+                        <div className="flex flex-col md:flex-row md:items-center gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{item.category}</p>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className={`${differenceColor} font-medium font-mono min-w-[100px] inline-block text-right`}>
+                              {difference.toFixed(1)}%
+                            </span>
+                            {item.targetPurchase && item.currentPrice && (
+                              <span className="text-sm text-gray-600 dark:text-gray-400 inline-block min-w-[100px] text-right">
+                                Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                      
+                      {openItems[item.id] && (
                       <div className="flex flex-col md:flex-row md:items-center gap-4">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
@@ -486,6 +517,7 @@ const PriceComparisonApp = () => {
                           </button>
                         </div>
                       </div>
+                      )}
                     </div>
                   );
                 })}
