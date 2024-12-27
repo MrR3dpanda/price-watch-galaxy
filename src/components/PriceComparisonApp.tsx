@@ -415,7 +415,7 @@ const PriceComparisonApp = () => {
 
           {filteredDailyLists.length > 0 ? (
             <div key={filteredDailyLists[currentDayIndex].date}>
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredDailyLists[currentDayIndex].items.map(item => {
                   const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
                   const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
@@ -433,13 +433,9 @@ const PriceComparisonApp = () => {
                     >
                       <button
                         onClick={() => toggleItem(item.id)}
-                        className="w-full p-4 text-left"
+                        className="w-full p-2 text-left"
                       >
-                        <div className="flex flex-col md:flex-row md:items-center gap-4">
-                          <div className="flex-1">
-                            <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
-                          </div>
-                        </div>
+                        <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
                       </button>
                       
                       {openItems[item.id] && (
