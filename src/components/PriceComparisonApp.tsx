@@ -43,7 +43,7 @@ const PriceComparisonApp = () => {
   useEffect(() => {
     const savedDailyLists = localStorage.getItem('dailyPriceLists');
     const savedItemHistory = localStorage.getItem('itemHistory');
-    
+
     if (savedDailyLists) {
       setDailyLists(JSON.parse(savedDailyLists));
     }
@@ -69,7 +69,7 @@ const PriceComparisonApp = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || !previousPrice) {
       setError('Please fill in all required fields');
       return;
@@ -183,8 +183,8 @@ const PriceComparisonApp = () => {
               setItemHistory(prevHistory => {
                 const existing = prevHistory.find(h => h.name === item.name);
                 if (existing) {
-                  return prevHistory.map(h => 
-                    h.name === item.name 
+                  return prevHistory.map(h =>
+                    h.name === item.name
                       ? { ...h, lastPrice: newPrice, lastUpdated: today }
                       : h
                   );
@@ -199,7 +199,7 @@ const PriceComparisonApp = () => {
                   }
                 ];
               });
-              
+
               return { ...item, currentPrice: newPrice, lastPrice: newPrice };
             }
             return item;
@@ -278,7 +278,7 @@ const PriceComparisonApp = () => {
                   />
                 </svg>
               </button>
-              
+
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg z-50">
                   <div className="p-4">
@@ -385,7 +385,7 @@ const PriceComparisonApp = () => {
         <div className="space-y-6">
           {filteredDailyLists.length > 0 && (
             <div className="flex items-center justify-between mb-4">
-              <button 
+              <button
                 onClick={() => setCurrentDayIndex(prev => Math.max(0, prev - 1))}
                 disabled={currentDayIndex === 0}
                 className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 disabled:opacity-50"
@@ -395,7 +395,7 @@ const PriceComparisonApp = () => {
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {new Date(filteredDailyLists[currentDayIndex].date).toLocaleDateString()}
               </h2>
-              <button 
+              <button
                 onClick={() => setCurrentDayIndex(prev => Math.min(filteredDailyLists.length - 1, prev + 1))}
                 disabled={currentDayIndex === filteredDailyLists.length - 1}
                 className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 disabled:opacity-50"
@@ -404,7 +404,7 @@ const PriceComparisonApp = () => {
               </button>
             </div>
           )}
-          
+
           {filteredDailyLists.length > 0 ? (
             <div key={filteredDailyLists[currentDayIndex].date}>
               <div className="space-y-4">
@@ -416,10 +416,10 @@ const PriceComparisonApp = () => {
                     <div
                       key={item.id}
                       className={`p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ${
-                        difference > 0 
-                          ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700' 
-                          : difference < 0 
-                          ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700' 
+                        difference > 0
+                          ? 'bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-700'
+                          : difference < 0
+                          ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700'
                           : 'bg-white dark:bg-gray-800'
                       }`}
                     >
@@ -436,21 +436,21 @@ const PriceComparisonApp = () => {
                               max={item.previousPrice * 1.5}
                               value={item.currentPrice}
                               onChange={(e) => handlePriceChange(item.id, parseFloat(e.target.value))}
-                              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer 
-                                dark:bg-gray-700 
+                              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
+                                dark:bg-gray-700
                                 group-hover:bg-gray-300 dark:group-hover:bg-gray-600
                                 transition-colors duration-300
-                                [&::-webkit-slider-thumb]:appearance-none 
-                                [&::-webkit-slider-thumb]:w-4 
-                                [&::-webkit-slider-thumb]:h-4 
-                                [&::-webkit-slider-thumb]:bg-blue-500 
-                                [&::-webkit-slider-thumb]:rounded-full 
+                                [&::-webkit-slider-thumb]:appearance-none
+                                [&::-webkit-slider-thumb]:w-4
+                                [&::-webkit-slider-thumb]:h-4
+                                [&::-webkit-slider-thumb]:bg-blue-500
+                                [&::-webkit-slider-thumb]:rounded-full
                                 [&::-webkit-slider-thumb]:shadow-md
                                 [&::-webkit-slider-thumb]:hover:bg-blue-600
-                                [&::-moz-range-thumb]:w-4 
-                                [&::-moz-range-thumb]:h-4 
-                                [&::-moz-range-thumb]:bg-blue-500 
-                                [&::-moz-range-thumb]:rounded-full 
+                                [&::-moz-range-thumb]:w-4
+                                [&::-moz-range-thumb]:h-4
+                                [&::-moz-range-thumb]:bg-blue-500
+                                [&::-moz-range-thumb]:rounded-full
                                 [&::-moz-range-thumb]:shadow-md
                                 [&::-moz-range-thumb]:hover:bg-blue-600"
                               step="0.01"
