@@ -415,7 +415,7 @@ const PriceComparisonApp = () => {
 
           {filteredDailyLists.length > 0 ? (
             <div key={filteredDailyLists[currentDayIndex].date}>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-4">
                 {filteredDailyLists[currentDayIndex].items.map((item, index) => {
                   const difference = calculatePriceDifference(item.previousPrice, item.currentPrice);
                   const differenceColor = difference < 0 ? 'text-green-500' : difference > 0 ? 'text-red-500' : 'text-gray-500';
@@ -429,7 +429,7 @@ const PriceComparisonApp = () => {
                           : difference < 0
                           ? 'bg-green-50 dark:bg-green-900/30 border-2 border-green-200 dark:border-green-700'
                           : 'bg-white dark:bg-gray-800'
-                      } ${openItems[item.id] ? 'col-span-1 md:col-span-4' : ''}`}
+                      } ${openItems[item.id] ? 'col-span-3 md:col-span-4' : ''}`}
                     >
                       <button
                         onClick={() => toggleItem(item.id)}
