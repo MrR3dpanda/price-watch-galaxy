@@ -479,10 +479,10 @@ const PriceComparisonApp = () => {
                           <div className="w-full group">
                             <input
                               type="range"
-                              min={item.previousPrice * 0.5}
-                              max={item.previousPrice * 1.5}
-                              value={item.currentPrice}
-                              onChange={(e) => handlePriceChange(item.id, parseFloat(e.target.value))}
+                              min={Math.round(item.previousPrice * 0.5)}
+                              max={Math.round(item.previousPrice * 1.5)}
+                              value={Math.round(item.currentPrice)}
+                              onChange={(e) => handlePriceChange(item.id, Math.round(parseFloat(e.target.value)))}
                               className="w-full h-2 bg-gray-200 rounded-lg appearance-none
                                 dark:bg-gray-700
                                 group-hover:bg-gray-300 dark:group-hover:bg-gray-600
@@ -500,7 +500,7 @@ const PriceComparisonApp = () => {
                                 [&::-moz-range-thumb]:rounded-full
                                 [&::-moz-range-thumb]:shadow-md
                                 [&::-moz-range-thumb]:hover:bg-blue-600"
-                              step="0.01"
+                              step="1"
                             />
                           </div>
                           <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
