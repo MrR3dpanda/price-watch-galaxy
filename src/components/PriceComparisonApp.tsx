@@ -514,7 +514,7 @@ const PriceComparisonApp = () => {
                           </span>
                           {item.targetPurchase && item.currentPrice && (
                             <span className="text-sm text-gray-600 dark:text-gray-400 inline-block min-w-[100px] text-right">
-                              Buy: {(item.targetPurchase / item.currentPrice).toFixed(2)} units
+                              Buy: {Math.round(item.targetPurchase / item.currentPrice)} units
                             </span>
                           )}
                           <button
