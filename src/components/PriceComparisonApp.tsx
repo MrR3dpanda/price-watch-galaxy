@@ -264,7 +264,7 @@ const PriceComparisonApp = () => {
     <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Price Comparison</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white text-center w-full">Price Comparison</h1>
           <div className="flex items-center gap-4">
             <DarkModeToggle />
             <div className="flex gap-2">
@@ -418,7 +418,6 @@ const PriceComparisonApp = () => {
             </div>
           </div>
         </div>
-
         <SearchAndSort
           search={search}
           setSearch={setSearch}
@@ -484,7 +483,7 @@ const PriceComparisonApp = () => {
                               max={item.previousPrice * 1.5}
                               value={item.currentPrice}
                               onChange={(e) => handlePriceChange(item.id, parseFloat(e.target.value))}
-                              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
+                              className="w-full h-2 bg-gray-200 rounded-lg appearance-none
                                 dark:bg-gray-700
                                 group-hover:bg-gray-300 dark:group-hover:bg-gray-600
                                 transition-colors duration-300
