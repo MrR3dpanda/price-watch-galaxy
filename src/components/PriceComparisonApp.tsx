@@ -544,6 +544,18 @@ const PriceComparisonApp = () => {
               No items found. Add some items to get started!
             </p>
           )}
+
+          {/* Target Purchase Tracker */}
+          <div className="mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+              Total Target Purchase
+            </h3>
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              ${filteredDailyLists.reduce((total, list) => 
+                total + list.items.reduce((sum, item) => 
+                  sum + (item.targetPurchase || 0), 0), 0).toFixed(2)}
+            </div>
+          </div>
         </div>
       </div>
     </div>
