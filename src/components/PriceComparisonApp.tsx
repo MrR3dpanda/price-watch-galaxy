@@ -267,6 +267,14 @@ const PriceComparisonApp = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Price Comparison</h1>
           <div className="flex items-center gap-4">
             <DarkModeToggle />
+            <button
+              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+              title="Total Target Purchase"
+            >
+              ${filteredDailyLists.reduce((total, list) => 
+                total + list.items.reduce((sum, item) => 
+                  sum + (item.targetPurchase || 0), 0), 0).toFixed(2)}
+            </button>
             <div className="flex gap-2">
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -545,31 +553,16 @@ const PriceComparisonApp = () => {
             </p>
           )}
 
-          {/* Purchase Trackers */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Target Purchase Tracker */}
-            <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
-                Total Target Purchase
-              </h3>
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                ${filteredDailyLists.reduce((total, list) => 
-                  total + list.items.reduce((sum, item) => 
-                    sum + (item.targetPurchase || 0), 0), 0).toFixed(2)}
-              </div>
-            </div>
-
-            {/* Purchased Tracker */}
-            <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
-                Total Purchased
-              </h3>
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                ${filteredDailyLists.reduce((total, list) => 
-                  total + list.items.reduce((sum, item) => 
-                    sum + (item.currentPrice && item.targetPurchase ? 
-                      Math.round(item.targetPurchase / item.currentPrice) * item.currentPrice : 0), 0), 0).toFixed(2)}
-              </div>
+          {/* Purchased Tracker */}
+          <div className="mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+              Total Purchased
+            </h3>
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+              ${filteredDailyLists.reduce((total, list) => 
+                total + list.items.reduce((sum, item) => 
+                  sum + (item.currentPrice && item.targetPurchase ? 
+                    Math.round(item.targetPurchase / item.currentPrice) * item.currentPrice : 0), 0), 0).toFixed(2)}
             </div>
           </div>
         </div>
