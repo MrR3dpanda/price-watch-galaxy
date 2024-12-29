@@ -40,6 +40,8 @@ const PriceComparisonApp = () => {
   const [editingItem, setEditingItem] = useState<PriceItem | null>(null);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+  const [sliderValue, setSliderValue] = useState<number | null>(null);
+  const [sliderPosition, setSliderPosition] = useState({ x: 0, y: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleItem = (id: string) => {
@@ -261,7 +263,19 @@ const PriceComparisonApp = () => {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-gray-900 transition-colors relative">
+      {sliderValue !== null && (
+        <div 
+          className="fixed pointer-events-none text-3xl font-bold text-blue-500 dark:text-blue-400 transition-all"
+          style={{
+            left: `${sliderPosition.x}px`,
+            top: `${sliderPosition.y}px`,
+            transform: 'translateX(-50%)'
+          }}
+        >
+          ${sliderValue}
+        </div>
+      )}
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Price Comparison</h1>
@@ -490,7 +504,18 @@ const PriceComparisonApp = () => {
                               min={Math.round(item.previousPrice * 0.5)}
                               max={Math.round(item.previousPrice * 1.5)}
                               value={Math.round(item.currentPrice)}
-                              onChange={(e) => handlePriceChange(item.id, Math.round(parseFloat(e.target.value)))}
+                              onChange={(e) => {
+                                const value = Math.round(parseFloat(e.target.value));
+                                const rect = e.target.getBoundingClientRect();
+                                setSliderValue(value);
+                                setSliderPosition({
+                                  x: rect.left + (e.nativeEvent.offsetX || rect.width / 2),
+                                  y: rect.top - 50
+                                });
+                                handlePriceChange(item.id, value);
+                              }}
+                              onMouseUp={() => setSliderValue(null)}
+                              onTouchEnd={() => setSliderValue(null)}
                               className="w-full h-2 bg-gray-200 rounded-lg appearance-none
                                 dark:bg-gray-700
                                 group-hover:bg-gray-300 dark:group-hover:bg-gray-600
