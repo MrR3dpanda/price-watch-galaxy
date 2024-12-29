@@ -271,8 +271,8 @@ const PriceComparisonApp = () => {
               className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors"
               title="Total Target Purchase"
             >
-              ${filteredDailyLists.reduce((total, list) => 
-                total + list.items.reduce((sum, item) => 
+              ${filteredDailyLists.reduce((total, list) =>
+                total + list.items.reduce((sum, item) =>
                   sum + (item.targetPurchase || 0), 0), 0).toFixed(2)}
             </button>
             <div className="flex gap-2">
